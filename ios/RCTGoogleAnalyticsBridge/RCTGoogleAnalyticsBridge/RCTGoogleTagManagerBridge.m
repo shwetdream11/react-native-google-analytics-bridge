@@ -96,13 +96,13 @@ RCT_EXPORT_METHOD(pushDataLayerEvent:(NSDictionary*)dictionary
 
 
 RCT_EXPORT_METHOD(pushDataLayerEventAndResetVariables:(NSDictionary*)dictionary
-                  variables:(NSDictionary*)
+                  variables:(NSDictionary*)resetVariables
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject){
     if (self.container != nil && [[dictionary allKeys] containsObject:@"event"]) {
         [[TAGManager instance].dataLayer push:dictionary];
         [[TAGManager instance] dispatch];
-        [[TAGManager instance].dataLayer push:variables];
+        [[TAGManager instance].dataLayer push:resetVariables];
         [[TAGManager instance] dispatch];
         resolve(@YES);
     } else {

@@ -3,7 +3,7 @@
 On November 13th 2018 Google issued the following statement:
 
 > We want to let you know that in October 2019 we will begin to sunset our Google Analytics for mobile apps reporting and the Google Analytics Services SDK. 
-
+>
 > Data collection and processing for such properties will stop on October 31, 2019. 
 
 The message is quite clear, and therefore I am officially deprecating this library. If you want to continue using Google's solutions for analytics, I recommend you move to Google Analytics for Firebase instead. 
@@ -19,7 +19,6 @@ Thanks to everyone who have used or contributed to this library!
 # GoogleAnalyticsBridge [![npm version](https://img.shields.io/npm/v/react-native-google-analytics-bridge.svg)](https://www.npmjs.com/package/react-native-google-analytics-bridge) [![Build Status](https://travis-ci.org/idehub/react-native-google-analytics-bridge.svg?branch=master)](https://travis-ci.org/idehub/react-native-google-analytics-bridge)
 
 **Google Analytics Bridge** is built to provide an easy interface to the native Google Analytics libraries on both **iOS** and **Android**.
-
 
 ## Why a native bridge? Why not use just JavaScript?
 
@@ -199,40 +198,43 @@ GoogleTagManager.registerFunctionCallTagHandler(
     -   [pushDataLayerEvent](#pushdatalayerevent)
         -   [Parameters](#parameters-22)
         -   [Examples](#examples-25)
-    -   [registerFunctionCallTagHandler](#registerfunctioncalltaghandler)
+    -   [pushDataLayerEventAndResetVariables](#pushdatalayereventandresetvariables)
         -   [Parameters](#parameters-23)
-    -   [setVerboseLoggingEnabled](#setverboseloggingenabled)
+        -   [Examples](#examples-26)
+    -   [registerFunctionCallTagHandler](#registerfunctioncalltaghandler)
         -   [Parameters](#parameters-24)
+    -   [setVerboseLoggingEnabled](#setverboseloggingenabled)
+        -   [Parameters](#parameters-25)
 -   [HitPayload](#hitpayload)
-    -   [Parameters](#parameters-25)
-    -   [Examples](#examples-26)
--   [TimingMetadata](#timingmetadata)
     -   [Parameters](#parameters-26)
     -   [Examples](#examples-27)
 -   [EventMetadata](#eventmetadata)
     -   [Parameters](#parameters-27)
     -   [Examples](#examples-28)
--   [CustomMetrics](#custommetrics)
+-   [TimingMetadata](#timingmetadata)
+    -   [Parameters](#parameters-28)
     -   [Examples](#examples-29)
--   [CustomDimensionsByField](#customdimensionsbyfield)
+-   [CustomMetrics](#custommetrics)
     -   [Examples](#examples-30)
 -   [CustomDimensionsByIndex](#customdimensionsbyindex)
     -   [Examples](#examples-31)
--   [CustomDimensionsFieldIndexMap](#customdimensionsfieldindexmap)
+-   [CustomDimensionsByField](#customdimensionsbyfield)
     -   [Examples](#examples-32)
--   [DataLayerEvent](#datalayerevent)
-    -   [Parameters](#parameters-28)
+-   [CustomDimensionsFieldIndexMap](#customdimensionsfieldindexmap)
     -   [Examples](#examples-33)
--   [ProductActionEnum](#productactionenum)
--   [ProductAction](#productaction)
+-   [DataLayerEvent](#datalayerevent)
     -   [Parameters](#parameters-29)
     -   [Examples](#examples-34)
--   [Transaction](#transaction)
+-   [ProductActionEnum](#productactionenum)
+-   [ProductAction](#productaction)
     -   [Parameters](#parameters-30)
     -   [Examples](#examples-35)
 -   [Product](#product)
     -   [Parameters](#parameters-31)
     -   [Examples](#examples-36)
+-   [Transaction](#transaction)
+    -   [Parameters](#parameters-32)
+    -   [Examples](#examples-37)
 
 ### GoogleAnalyticsSettings
 
@@ -706,6 +708,26 @@ GoogleTagManager.pushDataLayerEvent({
 
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
 
+#### pushDataLayerEventAndResetVariables
+
+Push a datalayer event for Google Analytics through Google Tag Manager. The event must have at least one key "event" with event name.
+
+##### Parameters
+
+-   `event` **[DataLayerEvent](#datalayerevent)** An Map&lt;String, Object> containing key and value pairs. It must have at least one key "event" with event name
+-   `variables`  
+
+##### Examples
+
+```javascript
+GoogleTagManager.pushDataLayerEvent({
+  event: "eventName",
+  pageId: "/home"
+}).then(success => console.log(success));
+```
+
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)>** 
+
 #### registerFunctionCallTagHandler
 
 Register Function Call tag handler
@@ -781,22 +803,6 @@ const payload = { customDimensions };
 tracker.trackScreenView("SaleScreen", payload);
 ```
 
-### TimingMetadata
-
-Used when tracking time measurements
-
-#### Parameters
-
--   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Required)
--   `label` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
-
-#### Examples
-
-```javascript
-const timingMetadata = { name: "LoadList" } // name is a required value when tracking timing
-tracker.trackTiming("testcategory", 13000, timingMetadata);
-```
-
 ### EventMetadata
 
 Used when tracking event
@@ -813,6 +819,22 @@ const eventMetadata = { label: "v1.0.3", value: 22 }
 tracker.trackEvent("FinalizeOrderButton", "Click", eventMetadata);
 ```
 
+### TimingMetadata
+
+Used when tracking time measurements
+
+#### Parameters
+
+-   `name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Required)
+-   `label` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
+
+#### Examples
+
+```javascript
+const timingMetadata = { name: "LoadList" } // name is a required value when tracking timing
+tracker.trackTiming("testcategory", 13000, timingMetadata);
+```
+
 ### CustomMetrics
 
 A dictionary with custom metric values and their index keys.
@@ -822,6 +844,20 @@ A dictionary with custom metric values and their index keys.
 ```javascript
 const customMetrics = { 1: 2389, 4: 15000 }
 tracker.trackScreenView("Home", { customMetrics });
+```
+
+### CustomDimensionsByIndex
+
+-   **See: CustomDimensionsFieldIndexMap**
+-   **See: CustomDimensionsByField**
+
+A dictionary with custom dimensions values and their index keys.
+
+#### Examples
+
+```javascript
+const customDimensions = { 1: "Premium", 3: "Beta", 5: 1200 }
+tracker.trackScreenView("Home", { customDimensions });
 ```
 
 ### CustomDimensionsByField
@@ -837,20 +873,6 @@ provided a `CustomDimensionsFieldIndexMap` when constructing the tracker.
 
 ```javascript
 const customDimensions = { customerType: "Premium", appType: "Beta", credit: 1200 }
-tracker.trackScreenView("Home", { customDimensions });
-```
-
-### CustomDimensionsByIndex
-
--   **See: CustomDimensionsFieldIndexMap**
--   **See: CustomDimensionsByField**
-
-A dictionary with custom dimensions values and their index keys.
-
-#### Examples
-
-```javascript
-const customDimensions = { 1: "Premium", 3: "Beta", 5: 1200 }
 tracker.trackScreenView("Home", { customDimensions });
 ```
 
@@ -940,34 +962,6 @@ const productAction = {
 }
 ```
 
-### Transaction
-
-Enhanced Ecommerce Transaction
-
-Used by `ProductAction` when populating describing a purchase/transaction
-
-#### Parameters
-
--   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `affiliation` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
--   `revenue` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional - but not really)
--   `tax` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional)
--   `shipping` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional)
--   `couponCode` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
-
-#### Examples
-
-```javascript
-const transaction = {
-  id: "T12345",
-  affiliation: "Google Store - Online",
-  revenue: 37.39,
-  tax: 2.85,
-  shipping: 5.34,
-  couponCode: "SUMMER2013"
-};
-```
-
 ### Product
 
 Enhanced Ecommerce Product
@@ -997,5 +991,33 @@ const product = {
   price: 29.2,
   quantity: 1,
   couponCode: "APPARELSALE"
+};
+```
+
+### Transaction
+
+Enhanced Ecommerce Transaction
+
+Used by `ProductAction` when populating describing a purchase/transaction
+
+#### Parameters
+
+-   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `affiliation` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
+-   `revenue` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional - but not really)
+-   `tax` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional)
+-   `shipping` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** (Optional)
+-   `couponCode` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** (Optional)
+
+#### Examples
+
+```javascript
+const transaction = {
+  id: "T12345",
+  affiliation: "Google Store - Online",
+  revenue: 37.39,
+  tax: 2.85,
+  shipping: 5.34,
+  couponCode: "SUMMER2013"
 };
 ```
